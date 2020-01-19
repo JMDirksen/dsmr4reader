@@ -18,6 +18,14 @@ def main():
   except IndexError:
     usage()
 
+  # Read values
+  values = read_values(port, id_list)
+
+  # Output
+  print(values)
+
+
+def read_values(port, id_list):
   # Connect to serial port
   try:
     ser = serial.Serial(port, 115200, timeout=12)
@@ -28,18 +36,9 @@ def main():
   # Convert names to id's
   id_list = list(map(name_to_id, id_list))
 
-  # Read values
-  values = read_values(ser, id_list)
-
-  print(values)
-
-  ser.close()
-
-
-def read_values(serial, id_list):
   value_list = []
   for x in range(50):
-    read = serial.readline().decode("utf-8")
+    read = ser.readline().decode("utf-8")
     if not read: raise Exception("ReadTimeout")
     if read[:1] == "!": break
     if "(" in read:
@@ -47,6 +46,7 @@ def read_values(serial, id_list):
       value = read[read.find("("):].replace("(", "").replace(")", " ").strip()
       if id in id_list: value_list.append([id,value])
       if id_list[0] == "all": value_list.append([id,value])
+  ser.close()
   return value_list
 
 
