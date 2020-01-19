@@ -10,20 +10,25 @@
 import sys, serial
 
 def main():
+
+  # Get command line arguments
   try:
     port = sys.argv[1]
     id_list = sys.argv[2:]
   except IndexError:
     usage()
 
-  id_list = list(map(name_to_id, id_list))
-
+  # Connect to serial port
   try:
     ser = serial.Serial(port, 115200, timeout=12)
   except Exception as e:
     print(e)
     usage()
 
+  # Convert names to id's
+  id_list = list(map(name_to_id, id_list))
+
+  # Read values
   values = read_values(ser, id_list)
 
   print(values)
@@ -41,6 +46,7 @@ def read_values(serial, id_list):
       id = read.split("(")[0].strip()
       value = read[read.find("("):].replace("(", "").replace(")", " ").strip()
       if id in id_list: value_list.append([id,value])
+      if id_list[0] == "all": value_list.append([id,value])
   return value_list
 
 
