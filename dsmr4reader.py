@@ -37,7 +37,7 @@ def read_values(port, id_list):
   id_list = list(map(name_to_id, id_list))
 
   value_list = []
-  for x in range(50):
+  for _ in range(50):
     read = ser.readline().decode("utf-8")
     if not read: raise Exception("ReadTimeout")
     if read[:1] == "!": break
